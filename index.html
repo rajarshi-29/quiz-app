@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz App</title>
+
+    <!-- ✅ Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+    <div
+      class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-6 text-center animate-fadeIn"
+    >
+      <h1 class="text-3xl font-bold text-indigo-400 mb-4">Quiz App</h1>
+
+      <div id="quiz-container">
+        <!-- Question Section -->
+        <div id="question-container" class="hidden">
+          <h2 id="question-text" class="text-xl mb-4 font-semibold"></h2>
+          <ul id="choices-list" class="space-y-3"></ul>
+          <button
+            id="next-btn"
+            class="hidden mt-5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition"
+          >
+            Next Question
+          </button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result-container" class="hidden">
+          <h2 class="text-2xl mb-2 font-semibold">Your Score:</h2>
+          <p id="score" class="text-lg text-green-400 mb-4"></p>
+          <button
+            id="restart-btn"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition"
+          >
+            Restart Quiz
+          </button>
+        </div>
+
+        <!-- Start Button -->
+        <button
+          id="start-btn"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-lg transition"
+        >
+          Start Quiz
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const startBtn = document.getElementById("start-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const restartBtn = document.getElementById("restart-btn");
+        const questionContainer = document.getElementById("question-container");
+        const questionText = document.getElementById("question-text");
+        const choicesList = document.getElementById("choices-list");
+        const resultContainer = document.getElementById("result-container");
+        const scoreDisplay = document.getElementById("score");
+
+        const questions = [
+          {
+            question: "What is the capital of France?",
+            choices: ["Paris", "London", "Berlin", "Madrid"],
+            answer: "Paris",
+          },
+          {
+            question: "Which planet is known as the Red Planet?",
+            choices: ["Mars", "Venus", "Jupiter", "Saturn"],
+            answer: "Mars",
+          },
+          {
+            question: "Who wrote 'Hamlet'?",
+            choices: [
+              "Charles Dickens",
+              "Jane Austen",
+              "William Shakespeare",
+              "Mark Twain",
+            ],
+            answer: "William Shakespeare",
+          },
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        startBtn.addEventListener("click", startQuiz);
+
+        nextBtn.addEventListener("click", () => {
+          currentQuestionIndex++;
+          if (currentQuestionIndex < questions.length) {
+            showQuestion();
+          } else {
+            showResult();
+          }
+        });
+
+        restartBtn.addEventListener("click", () => {
+          currentQuestionIndex = 0;
+          score = 0;
+          resultContainer.classList.add("hidden");
+          startQuiz();
+        });
+
+        function startQuiz() {
+          startBtn.classList.add("hidden");
+          resultContainer.classList.add("hidden");
+          questionContainer.classList.remove("hidden");
+          showQuestion();
+        }
+
+        function showQuestion() {
+          nextBtn.classList.add("hidden");
+          questionText.textContent = questions[currentQuestionIndex].question;
+          choicesList.innerHTML = "";
+          questions[currentQuestionIndex].choices.forEach((choice) => {
+            const li = document.createElement("li");
+            li.textContent = choice;
+            li.className =
+              "bg-gray-700 py-2 rounded-lg cursor-pointer hover:bg-indigo-600 transition";
+            li.addEventListener("click", () => selectAnswer(choice, li));
+            choicesList.appendChild(li);
+          });
+        }
+
+        function selectAnswer(choice, selectedLi) {
+          const correctAnswer = questions[currentQuestionIndex].answer;
+          const allChoices = choicesList.querySelectorAll("li");
+
+          allChoices.forEach((li) => {
+            li.classList.add("pointer-events-none");
+            if (li.textContent === correctAnswer) {
+              li.classList.add("bg-green-600");
+            } else if (li === selectedLi && choice !== correctAnswer) {
+              li.classList.add("bg-red-600");
+            }
+          });
+
+          if (choice === correctAnswer) score++;
+          nextBtn.classList.remove("hidden");
+        }
+
+        function showResult() {
+          questionContainer.classList.add("hidden");
+          resultContainer.classList.remove("hidden");
+          scoreDisplay.textContent = `${score} out of ${questions.length}`;
+        }
+      });
+    </script>
+
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+    </style>
+  </body>
+</html>
