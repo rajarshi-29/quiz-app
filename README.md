@@ -4,6 +4,7 @@ A simple, interactive quiz application built using **vanilla JavaScript** and **
 The app presents multiple-choice questions, provides instant feedback on answers, and displays the final score at the end of the quiz.
 
 🔗 **Live Demo:** https://quiz-app-ten-xi-49.vercel.app/
+
 📦 **Source Code:** https://github.com/rajarshi-29/quiz-app
 
 ---
